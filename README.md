@@ -6,25 +6,9 @@
 
 $ bundle
 
-$ Add env variables to ~/.bashrc
+$ chmod a+x install_spotifycli.sh
 
-```
-export CLIENT_ID=''
-export CLIENT_SECRET=''
-```
-
-$ source ~/.bashrc
-
-Make executable
-
-$ chmod +x spotifycli.rb
-
-$ mv spotifycli.rb spotifycli
-
-$ sudo mv spotifycli /usr/local/bin/
-
-$ spotifycli
-
+$ ./install_spotifycli.sh
 
 ## Usage
 
