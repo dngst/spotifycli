@@ -12,6 +12,9 @@ $ Add env variables to ~/.bashrc
 export CLIENT_ID=''
 export CLIENT_SECRET=''
 ```
+
+$ source ~/.bashrc
+
 Make executable
 
 $ chmod +x spotifycli.rb
