@@ -8,15 +8,15 @@ class SpotifyCLI < Thor
   package_name 'SpotifyCLI'
   desc 'discover', 'List new album releases on Spotify'
   method_option :country, aliases: '-c', desc: 'Country code (e.g., US)', default: 'US'
-  method_option :limit, aliases: '-l', desc: 'Limit the number of releases', default: '50'
-  method_option :offset, aliases: '-o', desc: 'Offset for pagination', default: '0'
+  method_option :limit, aliases: '-l', desc: 'Limit the number of releases', type: :numeric, default: 50
+  method_option :offset, aliases: '-o', desc: 'Offset for pagination', type: :numeric, default: 0
 
   def discover
     access_token = fetch_access_token
 
     country = options[:country].upcase
-    limit = options[:limit].to_i
-    offset = options[:offset].to_i
+    limit = options[:limit]
+    offset = options[:offset]
 
     new_releases_url = 'https://api.spotify.com/v1/browse/new-releases'
 
