@@ -2,7 +2,6 @@
 
 require 'thor'
 require 'httparty'
-require 'dotenv/load'
 
 class SpotifyCLI < Thor
   package_name 'SpotifyCLI'
@@ -23,7 +22,7 @@ class SpotifyCLI < Thor
     params = { country: country, limit: limit, offset: offset }
     headers = { Authorization: "Bearer #{access_token}" }
 
-    response = HTTParty.get(new_releases_url, params: params, headers: headers)
+    response = HTTParty.get("#{new_releases_url}?#{URI.encode_www_form(params)}", headers: headers)
     handle_response(response)
   end
 
