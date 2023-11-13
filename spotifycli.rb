@@ -58,15 +58,16 @@ class SpotifyCLI < Thor
   def display_new_releases(new_releases)
     new_releases.each_with_index do |release, index|
       project_type = release['album_type'].capitalize
-      release_date = DateTime.parse(release['release_date']).strftime('%a, %d %b %Y')
+      release_date = DateTime.parse(release['release_date']).strftime('%d %b, %y')
       next unless project_type == 'Album'
 
-      puts "#{index + 1}. #{release['name']}"
+      puts "(#{release_date})"
+      puts "    #{release['name']}"
       puts "    Artists: #{release['artists'].map { |artist| artist['name'] }.join(', ')}"
       puts "    Tracks: #{release['total_tracks']}"
-      puts "    Released: #{release_date}"
+      # puts "    Released: #{release_date}"
       puts "    #{project_type}: #{release['external_urls']['spotify']}"
-      puts "\n#{'-' * 60}\n"
+      puts "\n#{'-' * 65}\n"
     end
   end
 end
