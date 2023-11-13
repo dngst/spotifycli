@@ -12,4 +12,4 @@ $ ./install_spotifycli.sh
 
 ## Usage
 
-$ spotifycli help discover
+$ spotifycli help new
