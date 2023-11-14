@@ -6,9 +6,9 @@
 
 $ bundle
 
-$ chmod a+x install_spotifycli.sh
+$ chmod a+x install.sh
 
-$ ./install_spotifycli.sh
+$ ./install.sh
 
 ## Usage
 

@@ -9,8 +9,8 @@ if [ -z "$CLIENT_ID" ] || [ -z "$CLIENT_SECRET" ]; then
   exit 1
 fi
 
-echo "export CLIENT_ID='$CLIENT_ID'" >> ~/.bashrc
-echo "export CLIENT_SECRET='$CLIENT_SECRET'" >> ~/.bashrc
+echo "export SPOTIFY_CLIENT_ID='$CLIENT_ID'" >> ~/.bashrc
+echo "export SPOTIFY_CLIENT_SECRET='$CLIENT_SECRET'" >> ~/.bashrc
 
 chmod a+x spotifycli
 
