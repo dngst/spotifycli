@@ -47,8 +47,8 @@ class SpotifyCLI < Thor
   end
 
   def fetch_access_token
-    client_id = ENV.fetch('CLIENT_ID', nil)
-    client_secret = ENV.fetch('CLIENT_SECRET', nil)
+    client_id = ENV.fetch('SPOTIFY_CLIENT_ID', nil)
+    client_secret = ENV.fetch('SPOTIFY_CLIENT_SECRET', nil)
 
     token_url = 'https://accounts.spotify.com/api/token'
     data = { grant_type: 'client_credentials' }
