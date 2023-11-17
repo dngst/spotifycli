@@ -5,13 +5,13 @@ require 'httparty'
 
 class SpotifyCLI < Thor
   package_name 'SpotifyCLI'
+
   desc 'new', 'List new album releases'
   method_option :country, aliases: '-c', desc: 'Country code (e.g., US)', default: 'US'
   method_option :limit, aliases: '-l', desc: 'Limit the number of releases', type: :numeric, default: 50
   method_option :offset, aliases: '-o', desc: 'Offset for pagination', type: :numeric, default: 0
-
   def new
-    access_token = fetch_access_token
+    @access_token ||= fetch_access_token
 
     country = options[:country].upcase
     limit = options[:limit]
@@ -20,9 +20,27 @@ class SpotifyCLI < Thor
     new_releases_url = 'https://api.spotify.com/v1/browse/new-releases'
 
     params = { country: country, limit: limit, offset: offset }
-    headers = { Authorization: "Bearer #{access_token}" }
+    headers = { Authorization: "Bearer #{@access_token}" }
 
     response = HTTParty.get("#{new_releases_url}?#{URI.encode_www_form(params)}", headers: headers)
+    handle_response(response)
+  end
+
+  desc 'year', 'Search for albums by year'
+  method_option :country, aliases: '-c', desc: 'Country code (e.g., US)', default: 'US'
+  method_option :limit, aliases: '-l', desc: 'Limit the number of releases', type: :numeric, default: 50
+  method_option :offset, aliases: '-o', desc: 'Offset for pagination', type: :numeric, default: 0
+  method_option :year, aliases: '-y', desc: 'Album release year', type: :numeric, default: Time.now.year
+  def year
+    @access_token ||= fetch_access_token
+
+    year = options[:year]
+    search_url = 'https://api.spotify.com/v1/search'
+
+    params = { q: "year:#{year}", type: 'album', limit: options[:limit], offset: options[:offset] }
+    headers = { Authorization: "Bearer #{@access_token}" }
+
+    response = HTTParty.get("#{search_url}?#{URI.encode_www_form(params)}", headers: headers)
     handle_response(response)
   end
 
@@ -41,12 +59,14 @@ class SpotifyCLI < Thor
   def run_command(command)
     result = system(command)
 
-    unless result
-      raise Thor::Error,"Command failed: #{command}"
-    end
+    return if result
+
+    raise Thor::Error, "Command failed: #{command}"
   end
 
   def fetch_access_token
+    return @access_token if @access_token
+
     client_id = ENV.fetch('SPOTIFY_CLIENT_ID', nil)
     client_secret = ENV.fetch('SPOTIFY_CLIENT_SECRET', nil)
 
@@ -57,9 +77,11 @@ class SpotifyCLI < Thor
     response = HTTParty.post(token_url, { body: data, headers: headers })
     token_data = JSON.parse(response.body)
 
-    return token_data['access_token'] if token_data['access_token']
+    @access_token = token_data['access_token'] if token_data['access_token']
 
-    puts 'Error obtaining access token:', token_data
+    puts 'Error obtaining access token:', token_data unless @access_token
+
+    @access_token
   end
 
   def handle_response(response)
@@ -74,10 +96,16 @@ class SpotifyCLI < Thor
   def display_new_releases(new_releases)
     new_releases.each do |release|
       project_type = release['album_type'].capitalize
-      release_date = DateTime.parse(release['release_date']).strftime('%d %b, %y')
+      release_date = release['release_date']
+      formatted_date = if release_date.match?(/^\d{4}-\d{2}-\d{2}$/)
+                         DateTime.parse(release_date).strftime('%d %b, %Y')
+                       else
+                         release_date
+                       end
+
       next unless project_type == 'Album'
 
-      puts "(#{release_date})"
+      puts "(#{formatted_date})"
       puts "    #{release['name']}"
       puts "    Artists: #{release['artists'].map { |artist| artist['name'] }.join(', ')}"
       puts "    Tracks: #{release['total_tracks']}"
@@ -86,7 +114,7 @@ class SpotifyCLI < Thor
     end
   end
 
-  def self.exit_on_failure?
+  def exit_on_failure?
     false
   end
 end
