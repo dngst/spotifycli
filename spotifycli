@@ -24,6 +24,8 @@ class SpotifyCLI < Thor
 
     response = HTTParty.get("#{new_releases_url}?#{URI.encode_www_form(params)}", headers: headers)
     handle_response(response)
+  rescue SocketError
+    handle_socket_error
   end
 
   desc 'year', 'Search for albums by year'
@@ -42,6 +44,8 @@ class SpotifyCLI < Thor
 
     response = HTTParty.get("#{search_url}?#{URI.encode_www_form(params)}", headers: headers)
     handle_response(response)
+  rescue SocketError
+    handle_socket_error
   end
 
   desc 'update', 'Update SpotifyCLI with local changes'
@@ -82,6 +86,10 @@ class SpotifyCLI < Thor
     puts 'Error obtaining access token:', token_data unless @access_token
 
     @access_token
+  end
+
+  def handle_socket_error
+    puts 'Error: Unable to connect. Please check your internet connection.'
   end
 
   def handle_response(response)
