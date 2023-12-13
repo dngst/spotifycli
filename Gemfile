@@ -1,4 +1,7 @@
 source 'https://rubygems.org'
 gem 'httparty'
-gem 'rubocop', require: false
 gem 'thor'
+
+group :development do
+  gem 'rubocop', require: false
+end
