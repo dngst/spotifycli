@@ -12,8 +12,6 @@ fi
 echo "export SPOTIFY_CLIENT_ID='$CLIENT_ID'" >> ~/.bashrc
 echo "export SPOTIFY_CLIENT_SECRET='$CLIENT_SECRET'" >> ~/.bashrc
 
-chmod a+x spotifycli
-
 sudo cp spotifycli /usr/local/bin/spotifycli
 
 echo "Installed SpotifyCLI!"

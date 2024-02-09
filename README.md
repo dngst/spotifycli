@@ -6,8 +6,6 @@
 
 $ bundle
 
-$ chmod a+x install.sh
-
 $ ./install.sh
 
 ## Usage
