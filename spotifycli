@@ -112,7 +112,7 @@ class SpotifyCLI < Thor
   end
 
   def handle_socket_error
-    puts 'Error: Unable to connect. Please check your internet connection.'
+    say 'Check your network connection and try again', :red
   end
 
   def handle_response(response)
