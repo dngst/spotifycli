@@ -59,6 +59,28 @@ class SpotifyCLI < Thor
     puts 'SpotifyCLI updated!'
   end
 
+  desc 'featured', 'List featured playlists'
+  method_option :country, aliases: '-c', desc: 'Country code (e.g., US)', default: 'US'
+  method_option :limit, aliases: '-l', desc: 'Limit the number of playlists', type: :numeric, default: 50
+  method_option :offset, aliases: '-o', desc: 'Offset for pagination', type: :numeric, default: 0
+  def featured
+    @access_token ||= fetch_access_token
+
+    country = options[:country].upcase
+    limit = options[:limit]
+    offset = options[:offset]
+
+    featured_playlists_url = 'https://api.spotify.com/v1/browse/featured-playlists'
+
+    params = { country: country, limit: limit, offset: offset }
+    headers = { Authorization: "Bearer #{@access_token}" }
+
+    response = HTTParty.get("#{featured_playlists_url}?#{URI.encode_www_form(params)}", headers: headers)
+    handle_response(response)
+  rescue SocketError
+    handle_socket_error
+  end
+
   private
 
   def run_command(command)
@@ -95,10 +117,16 @@ class SpotifyCLI < Thor
 
   def handle_response(response)
     if response.code == 200
-      new_releases = JSON.parse(response.body)['albums']['items']
-      display_new_releases(new_releases)
+      response_body = JSON.parse(response.body)
+      if response_body['albums']
+        display_new_releases(response_body['albums']['items'])
+      elsif response_body['playlists']
+        display_playlists(response_body['playlists']['items'])
+      else
+        puts 'Error: Invalid response format'
+      end
     else
-      puts "Error retrieving new releases: #{response.code}, #{response.body}"
+      puts "Error retrieving response: #{response.code}, #{response.body}"
     end
   end
 
@@ -119,6 +147,18 @@ class SpotifyCLI < Thor
       puts "    Artists: #{release['artists'].map { |artist| artist['name'] }.join(', ')}"
       puts "    Tracks: #{release['total_tracks']}"
       puts "    #{project_type}: #{release['external_urls']['spotify']}"
+      puts "\n#{'-' * 65}\n"
+    end
+  end
+
+  def display_playlists(playlists)
+    playlists.each do |playlist|
+      puts playlist['name']
+      puts ' '
+      description = playlist['description'].gsub(/<.*?>/, '')
+      puts "  #{description}"
+      puts "  Tracks: #{playlist['tracks']['total']}"
+      puts "  #{playlist['type']}: #{playlist['external_urls']['spotify']}"
       puts "\n#{'-' * 65}\n"
     end
   end
