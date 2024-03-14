@@ -8,6 +8,8 @@ $ bundle
 
 $ ./install.sh
 
+For zsh, echo the environment variables to ~/.zshenv then load them in ~/.zshrc with `source ~/.zshenv`
+
 ## Usage
 
 $ spotifycli
