@@ -1,6 +1,6 @@
 # Spotifycli
 
-> List new album releases via Spotify
+> Discover the latest albums
 
 https://developer.spotify.com
 
