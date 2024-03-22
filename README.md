@@ -2,13 +2,13 @@
 
 > List new album releases via Spotify
 
+https://developer.spotify.com
+
 ## Install
 
 $ bundle
 
 $ ./install
-
-For zsh, echo the environment variables to ~/.zshenv then load them in ~/.zshrc with `source ~/.zshenv`
 
 ## Usage
 
