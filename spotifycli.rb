@@ -49,8 +49,8 @@ class SpotifyCLI < Thor
     handle_socket_error
   end
 
-  desc 'update', 'Update SpotifyCLI with local changes'
-  def update
+  desc 'pack', 'Update SpotifyCLI with local changes'
+  def pack
     run_command('rm spotifycli')
     run_command('sudo rm /usr/local/bin/spotifycli')
     run_command('cp spotifycli.rb spotifycli')
@@ -59,7 +59,7 @@ class SpotifyCLI < Thor
     puts 'SpotifyCLI updated!'
   end
 
-  desc 'featured', 'List featured playlists'
+  desc 'feat', 'List featured playlists'
   method_option :country, aliases: '-c', desc: 'Country code (e.g., US)', default: 'US'
   method_option :limit, aliases: '-l', desc: 'Limit the number of playlists', type: :numeric, default: 50
   method_option :offset, aliases: '-o', desc: 'Offset for pagination', type: :numeric, default: 0
