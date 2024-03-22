@@ -1,5 +1,7 @@
 #!/bin/bash
 
+bundle
+
 read -p "Enter your Spotify CLIENT_ID: " CLIENT_ID
 
 read -p "Enter your Spotify CLIENT_SECRET: " CLIENT_SECRET

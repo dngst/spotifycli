@@ -4,9 +4,13 @@
 
 https://developer.spotify.com
 
-## Install
+## Setup
 
-$ bundle
+Create an app from the dashboard https://developer.spotify.com/dashboard
+
+Get the Client ID and Client secret from the apps settings page
+
+## Install
 
 $ ./install
 
