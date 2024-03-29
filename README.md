@@ -2,8 +2,6 @@
 
 > Discover the latest albums
 
-https://developer.spotify.com
-
 ## Setup
 
 Create an app from the dashboard https://developer.spotify.com/dashboard
