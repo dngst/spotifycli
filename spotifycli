@@ -158,7 +158,7 @@ class SpotifyCLI < Thor
       description = playlist['description'].gsub(/<.*?>/, '')
       puts "  #{description}"
       puts "  Tracks: #{playlist['tracks']['total']}"
-      puts "  #{playlist['type']}: #{playlist['external_urls']['spotify']}"
+      puts "  #{playlist['type'].capitalize}: #{playlist['external_urls']['spotify']}"
       puts "\n#{'-' * 65}\n"
     end
   end
