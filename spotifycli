@@ -140,7 +140,7 @@ class SpotifyCLI < Thor
                          release_date
                        end
 
-      next unless project_type == 'Album'
+      next unless project_type != 'Single'
 
       puts "(#{formatted_date})"
       puts "    #{release['name']}"
