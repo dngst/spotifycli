@@ -17,4 +17,8 @@ source ~/.bashrc
 
 sudo cp spotifycli /usr/local/bin/spotifycli
 
-echo "Installed SpotifyCLI!"
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+echo -e "${GREEN}Installed SpotifyCLI!${NC}"
+

@@ -56,7 +56,7 @@ class SpotifyCLI < Thor
     run_command('cp spotifycli.rb spotifycli')
     run_command('sudo cp spotifycli /usr/local/bin/spotifycli')
 
-    puts 'SpotifyCLI updated!'
+    say 'SpotifyCLI updated!', :green
   end
 
   desc 'feat', 'List featured playlists'
@@ -143,7 +143,7 @@ class SpotifyCLI < Thor
       next unless project_type != 'Single'
 
       puts "(#{formatted_date})"
-      puts "    #{release['name']}"
+      say "    #{release['name']}", :cyan
       puts "    Artists: #{release['artists'].map { |artist| artist['name'] }.join(', ')}"
       puts "    Tracks: #{release['total_tracks']}"
       puts "    #{project_type}: #{release['external_urls']['spotify']}"
@@ -153,11 +153,11 @@ class SpotifyCLI < Thor
 
   def display_playlists(playlists)
     playlists.each do |playlist|
-      puts playlist['name']
+      say playlist['name'], :cyan
       puts ' '
       description = playlist['description'].gsub(/<.*?>/, '')
       puts "  #{description}"
-      puts "  Tracks: #{playlist['tracks']['total']}"
+      say "  Tracks: #{playlist['tracks']['total']}", :yellow
       puts "  #{playlist['type'].capitalize}: #{playlist['external_urls']['spotify']}"
       puts "\n#{'-' * 65}\n"
     end
