@@ -18,6 +18,7 @@ $ spotifycli
 
 ```
 SpotifyCLI commands:
+  spotifycli cat             # List playlists by category
   spotifycli feat            # List featured playlists
   spotifycli help [COMMAND]  # Describe available commands or one specific command
   spotifycli new             # List new album releases

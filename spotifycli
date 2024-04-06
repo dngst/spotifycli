@@ -5,6 +5,8 @@ require 'thor'
 require 'httparty'
 
 class SpotifyCLI < Thor
+  include HTTParty
+  base_uri 'https://api.spotify.com/v1'
   package_name 'SpotifyCLI'
 
   desc 'new', 'List new album releases'
@@ -18,12 +20,12 @@ class SpotifyCLI < Thor
     limit = options[:limit]
     offset = options[:offset]
 
-    new_releases_url = 'https://api.spotify.com/v1/browse/new-releases'
+    url = '/browse/new-releases'
 
     params = { country: country, limit: limit, offset: offset }
     headers = { Authorization: "Bearer #{@access_token}" }
 
-    response = HTTParty.get("#{new_releases_url}?#{URI.encode_www_form(params)}", headers: headers)
+    response = self.class.get("#{url}?#{URI.encode_www_form(params)}", headers: headers)
     handle_response(response)
   rescue SocketError
     handle_socket_error
@@ -38,25 +40,15 @@ class SpotifyCLI < Thor
     @access_token ||= fetch_access_token
 
     year = options[:year]
-    search_url = 'https://api.spotify.com/v1/search'
+    search_url = "/search"
 
     params = { q: "year:#{year}", type: 'album', limit: options[:limit], offset: options[:offset] }
     headers = { Authorization: "Bearer #{@access_token}" }
 
-    response = HTTParty.get("#{search_url}?#{URI.encode_www_form(params)}", headers: headers)
+    response = self.class.get("#{search_url}?#{URI.encode_www_form(params)}", headers: headers)
     handle_response(response)
   rescue SocketError
     handle_socket_error
-  end
-
-  desc 'pack', 'Update SpotifyCLI with local changes'
-  def pack
-    run_command('rm spotifycli')
-    run_command('sudo rm /usr/local/bin/spotifycli')
-    run_command('cp spotifycli.rb spotifycli')
-    run_command('sudo cp spotifycli /usr/local/bin/spotifycli')
-
-    say 'SpotifyCLI updated!', :green
   end
 
   desc 'feat', 'List featured playlists'
@@ -70,15 +62,47 @@ class SpotifyCLI < Thor
     limit = options[:limit]
     offset = options[:offset]
 
-    featured_playlists_url = 'https://api.spotify.com/v1/browse/featured-playlists'
+    url = '/browse/featured-playlists'
 
     params = { country: country, limit: limit, offset: offset }
     headers = { Authorization: "Bearer #{@access_token}" }
 
-    response = HTTParty.get("#{featured_playlists_url}?#{URI.encode_www_form(params)}", headers: headers)
+    response = self.class.get("#{url}?#{URI.encode_www_form(params)}", headers: headers)
     handle_response(response)
   rescue SocketError
     handle_socket_error
+  end
+
+  desc 'cat', 'List playlists by category'
+  # sleep, focus, workout, party, chill, dinner, toplists, romance, wellness, anime, gaming,
+  # classical, soul, ambient, travel, 80s, 90s, 00s, 10s, decades, inspirational, songwriters
+  method_option :locale, aliases: '-c', desc: 'Country code (e.g., sv_SE)', default: 'en_US'
+  method_option :category, aliases: '-t', desc: 'Category', default: 'mood'
+  def cat
+    @access_token ||= fetch_access_token
+
+    locale = options[:locale]
+    category_id = options[:category]
+
+    url = "/browse/categories/#{category_id}/playlists"
+
+    params = { locale: locale }
+    headers = { Authorization: "Bearer #{@access_token}" }
+
+    response = self.class.get("#{url}?#{URI.encode_www_form(params)}", headers: headers)
+    handle_response(response)
+  rescue SocketError
+    handle_socket_error
+  end
+
+  desc 'pack', 'Update SpotifyCLI with local changes'
+  def pack
+    run_command('rm spotifycli')
+    run_command('sudo rm /usr/local/bin/spotifycli')
+    run_command('cp spotifycli.rb spotifycli')
+    run_command('sudo cp spotifycli /usr/local/bin/spotifycli')
+
+    say 'SpotifyCLI updated!', :green
   end
 
   private
@@ -97,11 +121,11 @@ class SpotifyCLI < Thor
     client_id = ENV.fetch('SPOTIFY_CLIENT_ID', nil)
     client_secret = ENV.fetch('SPOTIFY_CLIENT_SECRET', nil)
 
-    token_url = 'https://accounts.spotify.com/api/token'
+    url = 'https://accounts.spotify.com/api/token'
     data = { grant_type: 'client_credentials' }
     headers = { Authorization: "Basic #{Base64.strict_encode64("#{client_id}:#{client_secret}")}" }
 
-    response = HTTParty.post(token_url, { body: data, headers: headers })
+    response = self.class.post(url, { body: data, headers: headers })
     token_data = JSON.parse(response.body)
 
     @access_token = token_data['access_token'] if token_data['access_token']
