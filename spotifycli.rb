@@ -40,7 +40,7 @@ class SpotifyCLI < Thor
     @access_token ||= fetch_access_token
 
     year = options[:year]
-    search_url = "/search"
+    search_url = '/search'
 
     params = { q: "year:#{year}", type: 'album', limit: options[:limit], offset: options[:offset] }
     headers = { Authorization: "Bearer #{@access_token}" }
