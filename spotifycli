@@ -14,7 +14,7 @@ class SpotifyCLI < Thor
   method_option :limit, aliases: '-l', desc: 'Limit the number of releases', type: :numeric, default: 50
   method_option :offset, aliases: '-o', desc: 'Offset for pagination', type: :numeric, default: 0
   def new
-    @access_token ||= fetch_access_token
+    access_token
 
     country = options[:country].upcase
     limit = options[:limit]
@@ -23,7 +23,7 @@ class SpotifyCLI < Thor
     url = '/browse/new-releases'
 
     params = { country: country, limit: limit, offset: offset }
-    headers = { Authorization: "Bearer #{@access_token}" }
+    headers = { Authorization: "Bearer #{access_token}" }
 
     response = self.class.get("#{url}?#{URI.encode_www_form(params)}", headers: headers)
     handle_response(response)
@@ -37,13 +37,13 @@ class SpotifyCLI < Thor
   method_option :offset, aliases: '-o', desc: 'Offset for pagination', type: :numeric, default: 0
   method_option :year, aliases: '-y', desc: 'Album release year', type: :numeric, default: Time.now.year
   def year
-    @access_token ||= fetch_access_token
+    access_token
 
     year = options[:year]
     search_url = '/search'
 
     params = { q: "year:#{year}", type: 'album', limit: options[:limit], offset: options[:offset] }
-    headers = { Authorization: "Bearer #{@access_token}" }
+    headers = { Authorization: "Bearer #{access_token}" }
 
     response = self.class.get("#{search_url}?#{URI.encode_www_form(params)}", headers: headers)
     handle_response(response)
@@ -56,7 +56,7 @@ class SpotifyCLI < Thor
   method_option :limit, aliases: '-l', desc: 'Limit the number of playlists', type: :numeric, default: 50
   method_option :offset, aliases: '-o', desc: 'Offset for pagination', type: :numeric, default: 0
   def featured
-    @access_token ||= fetch_access_token
+    access_token
 
     country = options[:country].upcase
     limit = options[:limit]
@@ -65,7 +65,7 @@ class SpotifyCLI < Thor
     url = '/browse/featured-playlists'
 
     params = { country: country, limit: limit, offset: offset }
-    headers = { Authorization: "Bearer #{@access_token}" }
+    headers = { Authorization: "Bearer #{access_token}" }
 
     response = self.class.get("#{url}?#{URI.encode_www_form(params)}", headers: headers)
     handle_response(response)
@@ -79,7 +79,7 @@ class SpotifyCLI < Thor
   method_option :locale, aliases: '-c', desc: 'Country code (e.g., sv_SE)', default: 'en_US'
   method_option :category, aliases: '-t', desc: 'Category', default: 'mood'
   def cat
-    @access_token ||= fetch_access_token
+    access_token
 
     locale = options[:locale]
     category_id = options[:category]
@@ -87,7 +87,7 @@ class SpotifyCLI < Thor
     url = "/browse/categories/#{category_id}/playlists"
 
     params = { locale: locale }
-    headers = { Authorization: "Bearer #{@access_token}" }
+    headers = { Authorization: "Bearer #{access_token}" }
 
     response = self.class.get("#{url}?#{URI.encode_www_form(params)}", headers: headers)
     handle_response(response)
@@ -107,6 +107,10 @@ class SpotifyCLI < Thor
 
   private
 
+  def access_token
+    access_token ||= fetch_access_token
+  end
+
   def run_command(command)
     result = system(command)
 
@@ -116,8 +120,6 @@ class SpotifyCLI < Thor
   end
 
   def fetch_access_token
-    return @access_token if @access_token
-
     client_id = ENV.fetch('SPOTIFY_CLIENT_ID', nil)
     client_secret = ENV.fetch('SPOTIFY_CLIENT_SECRET', nil)
 
@@ -128,11 +130,7 @@ class SpotifyCLI < Thor
     response = self.class.post(url, { body: data, headers: headers })
     token_data = JSON.parse(response.body)
 
-    @access_token = token_data['access_token'] if token_data['access_token']
-
-    puts 'Error obtaining access token:', token_data unless @access_token
-
-    @access_token
+    token_data['access_token'] if token_data['access_token']
   end
 
   def handle_socket_error
