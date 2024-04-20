@@ -60,8 +60,6 @@ class SpotifyCLI < Thor
   end
 
   desc 'cat', 'List playlists by category'
-  # sleep, focus, workout, party, chill, dinner, toplists, romance, wellness, anime, gaming,
-  # classical, soul, ambient, travel, 80s, 90s, 00s, 10s, decades, inspirational, songwriters etc.
   method_option :locale, aliases: '-c', desc: 'Country code (e.g., sv_SE)', default: 'en_US'
   method_option :category, aliases: '-t', desc: 'Category', default: 'mood'
   def cat
@@ -72,6 +70,7 @@ class SpotifyCLI < Thor
     headers = { Authorization: "Bearer #{access_token}" }
     response = self.class.get("#{url}?#{URI.encode_www_form(params)}", headers: headers)
     handle_response(response)
+    puts 'sleep, focus, workout, party, chill, dinner, toplists, romance, wellness, anime, gaming, classical, soul, ambient, travel, 80s, 90s, 00s, 10s, decades, inspirational, songwriters etc.'
   rescue SocketError
     handle_socket_error
   end
