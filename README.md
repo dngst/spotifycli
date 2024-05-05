@@ -12,6 +12,8 @@ Get the Client ID and Client secret from the apps settings page
 
 $ ./install
 
+$ . ~/.bashrc
+
 ## Usage
 
 $ spotifycli
