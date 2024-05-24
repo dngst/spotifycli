@@ -124,7 +124,16 @@ class SpotifyCLI < Thor
   end
 
   def display_new_releases(new_releases)
-    new_releases.each do |release|
+    sorted_releases = new_releases.sort_by do |release|
+      release_date = release['release_date']
+      if release_date.match?(/^\d{4}-\d{2}-\d{2}$/)
+        DateTime.parse(release_date)
+      else
+        DateTime.new(release_date.to_i)
+      end
+    end.reverse
+
+    sorted_releases.reverse.each do |release|
       project_type = release['album_type'].capitalize
       release_date = release['release_date']
       formatted_date = if release_date.match?(/^\d{4}-\d{2}-\d{2}$/)
