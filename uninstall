@@ -1,0 +1,12 @@
+#!/bin/bash
+
+sed -i "/export SPOTIFY_CLIENT_ID=/d" ~/.bashrc
+sed -i "/export SPOTIFY_CLIENT_SECRET=/d" ~/.bashrc
+
+if [ -f "/usr/local/bin/spotifycli" ]; then
+    sudo rm /usr/local/bin/spotifycli
+    echo "Uninstalled SpotifyCLI"
+fi
+
+exec bash
+
