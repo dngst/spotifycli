@@ -21,3 +21,5 @@ NC='\033[0m'
 
 echo -e "${GREEN}Installed SpotifyCLI!${NC}"
 
+exec bash
+
