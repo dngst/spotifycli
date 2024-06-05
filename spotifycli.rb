@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'base64'
+require 'json'
+require 'date'
 require 'thor'
 require 'httparty'
 
