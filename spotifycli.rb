@@ -21,9 +21,9 @@ class SpotifyCLI < Thor
     limit = options[:limit]
     offset = options[:offset]
     url = '/browse/new-releases'
-    params = { country: country, limit: limit, offset: offset }
+    params = { country:, limit:, offset: }
     headers = { Authorization: "Bearer #{access_token}" }
-    response = self.class.get("#{url}?#{URI.encode_www_form(params)}", headers: headers)
+    response = self.class.get("#{url}?#{URI.encode_www_form(params)}", headers:)
     handle_response(response)
   rescue SocketError
     handle_socket_error
@@ -39,7 +39,7 @@ class SpotifyCLI < Thor
     search_url = '/search'
     params = { q: "year:#{year}", type: 'album', limit: options[:limit], offset: options[:offset] }
     headers = { Authorization: "Bearer #{access_token}" }
-    response = self.class.get("#{search_url}?#{URI.encode_www_form(params)}", headers: headers)
+    response = self.class.get("#{search_url}?#{URI.encode_www_form(params)}", headers:)
     handle_response(response)
   rescue SocketError
     handle_socket_error
@@ -54,9 +54,9 @@ class SpotifyCLI < Thor
     limit = options[:limit]
     offset = options[:offset]
     url = '/browse/featured-playlists'
-    params = { country: country, limit: limit, offset: offset }
+    params = { country:, limit:, offset: }
     headers = { Authorization: "Bearer #{access_token}" }
-    response = self.class.get("#{url}?#{URI.encode_www_form(params)}", headers: headers)
+    response = self.class.get("#{url}?#{URI.encode_www_form(params)}", headers:)
     handle_response(response)
   rescue SocketError
     handle_socket_error
@@ -69,9 +69,9 @@ class SpotifyCLI < Thor
     locale = options[:locale]
     category_id = options[:category]
     url = "/browse/categories/#{category_id}/playlists"
-    params = { locale: locale }
+    params = { locale: }
     headers = { Authorization: "Bearer #{access_token}" }
-    response = self.class.get("#{url}?#{URI.encode_www_form(params)}", headers: headers)
+    response = self.class.get("#{url}?#{URI.encode_www_form(params)}", headers:)
     handle_response(response)
     puts 'sleep, focus, workout, party, chill, dinner, toplists, romance, wellness, anime, gaming, classical, soul, ambient, travel, 80s, 90s, 00s, 10s, decades, inspirational, songwriters etc.'
   rescue SocketError
@@ -102,7 +102,7 @@ class SpotifyCLI < Thor
     url = 'https://accounts.spotify.com/api/token'
     data = { grant_type: 'client_credentials' }
     headers = { Authorization: "Basic #{Base64.strict_encode64("#{client_id}:#{client_secret}")}" }
-    response = self.class.post(url, { body: data, headers: headers })
+    response = self.class.post(url, { body: data, headers: })
     token_data = JSON.parse(response.body)
     token_data['access_token']
   end
