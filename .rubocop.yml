@@ -2,6 +2,7 @@ inherit_from: .rubocop_todo.yml
 
 AllCops:
   NewCops: enable
+  TargetRubyVersion: 3.3
   Exclude:
     - 'spotifycli'
 
