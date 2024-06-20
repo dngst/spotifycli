@@ -45,39 +45,6 @@ class SpotifyCLI < Thor
     handle_socket_error
   end
 
-  desc 'feat', 'List featured playlists'
-  method_option :country, aliases: '-c', desc: 'Country code (e.g., US)', default: 'US'
-  method_option :limit, aliases: '-l', desc: 'Limit the number of playlists', type: :numeric, default: 50
-  method_option :offset, aliases: '-o', desc: 'Offset for pagination', type: :numeric, default: 0
-  def featured
-    country = options[:country].upcase
-    limit = options[:limit]
-    offset = options[:offset]
-    url = '/browse/featured-playlists'
-    params = { country:, limit:, offset: }
-    headers = { Authorization: "Bearer #{access_token}" }
-    response = self.class.get("#{url}?#{URI.encode_www_form(params)}", headers:)
-    handle_response(response)
-  rescue SocketError
-    handle_socket_error
-  end
-
-  desc 'cat', 'List playlists by category'
-  method_option :locale, aliases: '-c', desc: 'Country code (e.g., sv_SE)', default: 'en_US'
-  method_option :category, aliases: '-t', desc: 'Category', default: 'mood'
-  def cat
-    locale = options[:locale]
-    category_id = options[:category]
-    url = "/browse/categories/#{category_id}/playlists"
-    params = { locale: }
-    headers = { Authorization: "Bearer #{access_token}" }
-    response = self.class.get("#{url}?#{URI.encode_www_form(params)}", headers:)
-    handle_response(response)
-    puts 'sleep, focus, workout, party, chill, dinner, toplists, romance, wellness, anime, gaming, classical, soul, ambient, travel, 80s, 90s, 00s, 10s, decades, inspirational, songwriters etc.'
-  rescue SocketError
-    handle_socket_error
-  end
-
   desc 'pack', 'Update SpotifyCLI with local changes'
   def pack
     run_command('rm spotifycli')
@@ -114,13 +81,7 @@ class SpotifyCLI < Thor
   def handle_response(response)
     if response.code == 200
       response_body = JSON.parse(response.body)
-      if response_body['albums']
-        display_new_releases(response_body['albums']['items'])
-      elsif response_body['playlists']
-        display_playlists(response_body['playlists']['items'])
-      else
-        puts 'Error: Invalid response format'
-      end
+      display_new_releases(response_body['albums']['items'])
     else
       puts "Error retrieving response: #{response.code}, #{response.body}"
     end
@@ -152,18 +113,6 @@ class SpotifyCLI < Thor
       puts "    Artists: #{release['artists'].map { |artist| artist['name'] }.join(', ')}"
       puts "    Tracks: #{release['total_tracks']}"
       puts "    #{project_type}: #{release['external_urls']['spotify']}"
-      puts "\n#{'-' * 65}\n"
-    end
-  end
-
-  def display_playlists(playlists)
-    playlists.each do |playlist|
-      say playlist['name'], :cyan
-      puts ' '
-      description = playlist['description'].gsub(/<.*?>/, '')
-      puts "  #{description}"
-      say "  Tracks: #{playlist['tracks']['total']}", :yellow
-      puts "  #{playlist['type'].capitalize}: #{playlist['external_urls']['spotify']}"
       puts "\n#{'-' * 65}\n"
     end
   end
