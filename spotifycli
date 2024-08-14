@@ -110,7 +110,8 @@ class SpotifyCLI < Thor
 
       puts "(#{formatted_date})"
       say "    #{release['name']}", :cyan
-      puts "    Artists: #{release['artists'].map { |artist| artist['name'] }.join(', ')}"
+      print "    Artists:"
+      say " #{release['artists'].map { |artist| artist['name'] }.join(', ')}", :yellow
       puts "    Tracks: #{release['total_tracks']}"
       puts "    #{project_type}: #{release['external_urls']['spotify']}"
       puts "\n#{'-' * 65}\n"
