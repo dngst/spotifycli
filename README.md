@@ -21,5 +21,4 @@ SpotifyCLI commands:
   spotifycli help [COMMAND]  # Describe available commands or one specific command
   spotifycli new             # List new album releases
   spotifycli pack            # Update SpotifyCLI with local changes
-  spotifycli year            # Search for albums by year
 ```

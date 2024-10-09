@@ -29,22 +29,6 @@ class SpotifyCLI < Thor
     handle_socket_error
   end
 
-  desc 'year', 'Search for albums by year'
-  method_option :country, aliases: '-c', desc: 'Country code (e.g., US)', default: 'US'
-  method_option :limit, aliases: '-l', desc: 'Limit the number of releases', type: :numeric, default: 50
-  method_option :offset, aliases: '-o', desc: 'Offset for pagination', type: :numeric, default: 0
-  method_option :year, aliases: '-y', desc: 'Album release year', type: :numeric, default: Time.now.year
-  def year
-    year = options[:year]
-    search_url = '/search'
-    params = { q: "year:#{year}", type: 'album', limit: options[:limit], offset: options[:offset] }
-    headers = { Authorization: "Bearer #{access_token}" }
-    response = self.class.get("#{search_url}?#{URI.encode_www_form(params)}", headers:)
-    handle_response(response)
-  rescue SocketError
-    handle_socket_error
-  end
-
   desc 'pack', 'Update SpotifyCLI with local changes'
   def pack
     run_command('rm spotifycli')
@@ -110,7 +94,7 @@ class SpotifyCLI < Thor
 
       puts "(#{formatted_date})"
       say "    #{release['name']}", :cyan
-      print "    Artists:"
+      print '    Artists:'
       say " #{release['artists'].map { |artist| artist['name'] }.join(', ')}", :yellow
       puts "    Tracks: #{release['total_tracks']}"
       puts "    #{project_type}: #{release['external_urls']['spotify']}"
